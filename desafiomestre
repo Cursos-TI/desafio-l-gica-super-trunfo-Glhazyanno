@@ -1,0 +1,232 @@
+#include <stdio.h>
+#include <stdlib.h> // Para a função exit()
+
+// Define uma pequena folga para evitar erros de ponto flutuante em empates
+#define EPSILON 0.0001f
+
+int main() {
+    // -------------------------------------------------------------------------
+    // DECLARAÇÃO DE VARIÁVEIS
+    // População foi alterada para unsigned long int para maior robustez.
+    // -------------------------------------------------------------------------
+    char estadocarta1, estadocarta2;
+    char codigocarta1[4], codigocarta2[4];
+    char nomecidadecarta1[50], nomecidadecarta2[50];
+    unsigned long int populacaocarta1, populacaocarta2; 
+    float areacidadecarta1, areacidadecarta2;
+    float pibcarta1, pibcarta2;
+    int pontosturcarta1, pontosturcarta2;
+    
+    // Variáveis calculadas
+    float densidadepocarta1, densidadepocarta2;
+    float pibpercapitacarta1, pibpercapitacarta2;
+    float superpodercarta1, superpodercarta2;
+
+    // Variáveis de controle de menu
+    int escolha1, escolha2, continuar = 1;
+
+    // Array com os nomes dos atributos para exibição no menu
+    const char *atributos[] = {
+        "Nulo", 
+        "Populacao", 
+        "Area", 
+        "PIB", 
+        "Pontos Turisticos", 
+        "Densidade Populacional", 
+        "PIB per Capita", 
+        "Super Poder"
+    };
+
+    // -------------------------------------------------------------------------
+    // LEITURA DOS DADOS DA CARTA 1
+    // -------------------------------------------------------------------------
+    printf("--- Cadastro da Carta 1 ---\n");
+    printf("Digite a primeira letra do estado da carta 1:\n");
+    scanf(" %c", &estadocarta1);
+
+    printf("Digite o codigo da carta 1 (ex: A01 a A04):\n");
+    scanf("%s", codigocarta1);
+
+    printf("Digite o nome da cidade:\n");
+    scanf("%s", nomecidadecarta1);
+
+    printf("Digite a populacao (unsigned long int):\n");
+    scanf("%lu", &populacaocarta1);
+
+    printf("Digite a area em km² da cidade:\n");
+    scanf("%f", &areacidadecarta1);
+
+    printf("Digite o Produto Interno Bruto da cidade:\n");
+    scanf("%f", &pibcarta1);
+
+    printf("Digite a quantidade de pontos turisticos na cidade:\n");
+    scanf("%d", &pontosturcarta1);
+
+    // -------------------------------------------------------------------------
+    // LEITURA DOS DADOS DA CARTA 2
+    // -------------------------------------------------------------------------
+    printf("\n--- Cadastro da Carta 2 ---\n");
+    printf("Digite a primeira letra do estado da carta 2:\n");
+    scanf(" %c", &estadocarta2);
+
+    printf("Digite o codigo da carta 2 (ex: B01 a B04):\n");
+    scanf("%s", codigocarta2);
+
+    printf("Digite o nome da cidade:\n");
+    scanf("%s", nomecidadecarta2);
+
+    printf("Digite a populacao (unsigned long int):\n");
+    scanf("%lu", &populacaocarta2);
+
+    printf("Digite a area em km² da cidade:\n");
+    scanf("%f", &areacidadecarta2);
+
+    printf("Digite o Produto Interno Bruto da cidade:\n");
+    scanf("%f", &pibcarta2);
+
+    printf("Digite a quantidade de pontos turisticos na cidade:\n");
+    scanf("%d", &pontosturcarta2);
+
+    // -------------------------------------------------------------------------
+    // CÁLCULOS
+    // -------------------------------------------------------------------------
+    densidadepocarta1 = (float)populacaocarta1 / areacidadecarta1;
+    densidadepocarta2 = (float)populacaocarta2 / areacidadecarta2;
+
+    pibpercapitacarta1 = pibcarta1 / (float)populacaocarta1;
+    pibpercapitacarta2 = pibcarta2 / (float)populacaocarta2;
+
+    superpodercarta1 = (float)populacaocarta1 + areacidadecarta1 + pibcarta1 + pontosturcarta1 + pibpercapitacarta1 + (1.0f / densidadepocarta1);
+    superpodercarta2 = (float)populacaocarta2 + areacidadecarta2 + pibcarta2 + pontosturcarta2 + pibpercapitacarta2 + (1.0f / densidadepocarta2);
+
+
+    // -------------------------------------------------------------------------
+    // FUNÇÃO PRINCIPAL DO JOGO (Menu Dinâmico)
+    // -------------------------------------------------------------------------
+    do {
+        // --- Exibição de Dados e Menu ---
+        printf("\n\n--- DADOS FINAIS E MENU DE CONFRONTO ---\n");
+        printf("Carta 1: %s (Populacao: %lu, Super Poder: %.2f)\n", nomecidadecarta1, populacaocarta1, superpodercarta1);
+        printf("Carta 2: %s (Populacao: %lu, Super Poder: %.2f)\n", nomecidadecarta2, populacaocarta2, superpodercarta2);
+        
+        printf("\nEscolha DOIS atributos para o confronto:\n");
+        printf("1. Populacao (Maior Vence)\n");
+        printf("2. Area (Maior Vence)\n");
+        printf("3. PIB (Maior Vence)\n");
+        printf("4. Pontos Turisticos (Maior Vence)\n");
+        printf("5. Densidade Populacional (Menor Vence)\n");
+        printf("6. PIB per Capita (Maior Vence)\n");
+        printf("7. Super Poder (Maior Vence)\n");
+        printf("0. Sair\n");
+        
+        printf("\nEscolha do 1o Atributo (Principal): ");
+        if (scanf("%d", &escolha1) != 1) { // Verifica se a entrada é válida
+            printf("Entrada invalida. Saindo.\n");
+            break;
+        }
+
+        if (escolha1 == 0) {
+            continuar = 0;
+            break;
+        }
+
+        if (escolha1 < 1 || escolha1 > 7) {
+            printf("Escolha invalida para o 1o atributo. Tente novamente.\n");
+            continue;
+        }
+
+        printf("Escolha do 2o Atributo (Desempate): ");
+        if (scanf("%d", &escolha2) != 1) {
+            printf("Entrada invalida. Saindo.\n");
+            break;
+        }
+
+        if (escolha2 < 1 || escolha2 > 7) {
+            printf("Escolha invalida para o 2o atributo. Tente novamente.\n");
+            continue;
+        }
+        
+        // --- EXTRAÇÃO DE VALORES PARA COMPARAÇÃO ---
+        float val1_c1, val1_c2, val2_c1, val2_c2;
+        int tipo1_maior_vence = (escolha1 != 5);
+        int tipo2_maior_vence = (escolha2 != 5);
+
+        // Funções internas (macros) para obter valores para simplificar o código
+        #define GET_VAL(choice, c1, c2, val_c1, val_c2) \
+            switch (choice) { \
+                case 1: val_c1 = (float)populacaocarta1; val_c2 = (float)populacaocarta2; break; \
+                case 2: val_c1 = areacidadecarta1; val_c2 = areacidadecarta2; break; \
+                case 3: val_c1 = pibcarta1; val_c2 = pibcarta2; break; \
+                case 4: val_c1 = (float)pontosturcarta1; val_c2 = (float)pontosturcarta2; break; \
+                case 5: val_c1 = densidadepocarta1; val_c2 = densidadepocarta2; break; \
+                case 6: val_c1 = pibpercapitacarta1; val_c2 = pibpercapitacarta2; break; \
+                case 7: val_c1 = superpodercarta1; val_c2 = superpodercarta2; break; \
+            }
+
+        GET_VAL(escolha1, populacaocarta1, populacaocarta2, val1_c1, val1_c2);
+        GET_VAL(escolha2, populacaocarta1, populacaocarta2, val2_c1, val2_c2);
+        
+        // --- LÓGICA DE DECISÃO COMPLEXA (OPERADOR TERNÁRIO ANINHADO) ---
+        int vencedor; // 1: C1, 2: C2, 0: Empate
+
+        // 1. Vencedor no Atributo 1 (Principal)
+        int vitoria_c1_a1 = tipo1_maior_vence ? (val1_c1 > val1_c2 + EPSILON) : (val1_c1 < val1_c2 - EPSILON);
+        int vitoria_c2_a1 = tipo1_maior_vence ? (val1_c2 > val1_c1 + EPSILON) : (val1_c2 < val1_c1 - EPSILON);
+        int empate_a1 = (!vitoria_c1_a1 && !vitoria_c2_a1);
+
+        // 2. Vencedor no Atributo 2 (Desempate)
+        int vitoria_c1_a2 = tipo2_maior_vence ? (val2_c1 > val2_c2 + EPSILON) : (val2_c1 < val2_c2 - EPSILON);
+        int vitoria_c2_a2 = tipo2_maior_vence ? (val2_c2 > val2_c1 + EPSILON) : (val2_c2 < val2_c1 - EPSILON);
+
+        // Operador Ternário Aninhado:
+        vencedor = (vitoria_c1_a1) ? 1 :                                 // Se C1 venceu no A1
+                   (vitoria_c2_a1) ? 2 :                                 // Senão, se C2 venceu no A1
+                   (empate_a1) && (vitoria_c1_a2) ? 1 :                  // Senão, se houve empate no A1 e C1 venceu no A2
+                   (empate_a1) && (vitoria_c2_a2) ? 2 :                  // Senão, se houve empate no A1 e C2 venceu no A2
+                   0;                                                    // Senão (Empate total)
+
+        // --- EXIBIÇÃO DE RESULTADOS ---
+        printf("\n--- RESULTADO DO CONFRONTO ---\n");
+        printf("Principal: %s | Desempate: %s\n", atributos[escolha1], atributos[escolha2]);
+        printf("--------------------------------\n");
+        
+        // Exibição detalhada do Atributo 1
+        printf("1o Atributo (%s): ", atributos[escolha1]);
+        if (vitoria_c1_a1) {
+            printf("Carta 1 VENCE (%.2f vs %.2f)\n", val1_c1, val1_c2);
+        } else if (vitoria_c2_a1) {
+            printf("Carta 2 VENCE (%.2f vs %.2f)\n", val1_c2, val1_c1);
+        } else {
+            printf("EMPATE (%.2f vs %.2f)\n", val1_c1, val1_c2);
+        }
+
+        // Exibição detalhada do Atributo 2 (somente se houve empate no A1)
+        if (empate_a1) {
+            printf("2o Atributo (%s): ", atributos[escolha2]);
+            if (vitoria_c1_a2) {
+                 printf("CARTA 1 VENCE no desempate (%.2f vs %.2f)\n", val2_c1, val2_c2);
+            } else if (vitoria_c2_a2) {
+                 printf("CARTA 2 VENCE no desempate (%.2f vs %.2f)\n", val2_c2, val2_c1);
+            } else {
+                 printf("EMPATE no desempate (%.2f vs %.2f)\n", val2_c1, val2_c2);
+            }
+        }
+        
+        // Exibição do Vencedor Geral
+        printf("--------------------------------\n");
+        if (vencedor == 1) {
+            printf("!!! A GRANDE VENCEDORA E: CARTA 1 - %s !!!\n", nomecidadecarta1);
+        } else if (vencedor == 2) {
+            printf("!!! A GRANDE VENCEDORA E: CARTA 2 - %s !!!\n", nomecidadecarta2);
+        } else {
+            printf("!!! EMPATE TOTAL APOS O DESEMPATE !!!\n");
+        }
+        printf("--------------------------------\n");
+
+
+    } while (continuar);
+    
+    printf("\nJogo finalizado.\n");
+
+    return 0;
+}
